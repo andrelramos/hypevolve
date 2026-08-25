@@ -29,8 +29,11 @@ class WorkspaceManager:
         dest = self._path_for(individual_id)
         if dest.exists():
             raise WorkspaceError(f"workspace exists: {dest}")
+        parent = Path(parent_workspace)
+        if not parent.exists():
+            raise WorkspaceError(f"parent workspace not found: {parent_workspace}")
         self.root.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(parent_workspace, dest)
+        shutil.copytree(parent, dest)
         return str(dest)
 
     def remove(self, individual_id: int) -> None:

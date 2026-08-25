@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from hypevolve.workspace import WorkspaceManager
+from hypevolve.workspace import WorkspaceManager, WorkspaceError
 
 
 @pytest.fixture
@@ -44,3 +44,9 @@ def test_snapshot_copies_to_dest_without_git(tmp_path, source_repo):
     out = wm.snapshot(0, dest)
     assert Path(out).joinpath("app.py").exists()
     assert not Path(out).joinpath(".git").exists()
+
+
+def test_create_from_missing_parent_raises_workspace_error(tmp_path, source_repo):
+    wm = WorkspaceManager(tmp_path / "ws", source_repo)
+    with pytest.raises(WorkspaceError):
+        wm.create_from(str(tmp_path / "nope"), 5)
