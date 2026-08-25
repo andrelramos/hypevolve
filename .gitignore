@@ -8,3 +8,5 @@ results/
 targets/*
 !targets/.gitkeep
 .venv/
+experiments/configs/*.yaml
+!experiments/configs/*.template.yaml

@@ -16,7 +16,8 @@ Your workspace: {workspace}
 Profile the code, pick ONE optimization, apply it, and make sure tests still pass.
 End your reply with a fenced json block:
 ```json
-{{"hypothesis": "<one-sentence testable prediction>"}}"""
+{{"hypothesis": "<one-sentence testable prediction>"}}
+```"""
 
 DEFAULT_MUTATION_PROMPT = """You are individual {iid}, generation {gen}.
 Your current fitness: {fitness}
@@ -28,7 +29,8 @@ Validated knowledge so far:
 Propose and apply ONE new optimization guided by that knowledge.
 End your reply with a fenced json block:
 ```json
-{{"hypothesis": "<one-sentence testable prediction>"}}"""
+{{"hypothesis": "<one-sentence testable prediction>"}}
+```"""
 
 
 _JSON_BLOCK = re.compile(r"```json\s*(\{.*?\})\s*```", re.DOTALL)
