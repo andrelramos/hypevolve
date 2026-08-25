@@ -5,6 +5,9 @@ description = "GA orchestration of CLI coding agents for performance-driven soft
 requires-python = ">=3.12"
 dependencies = ["pyyaml>=6.0", "scipy>=1.13"]
 
+[project.scripts]
+hypevolve = "hypevolve.__main__:main"
+
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
