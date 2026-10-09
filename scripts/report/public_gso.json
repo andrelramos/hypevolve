@@ -1,0 +1,24 @@
+{
+  "source": "https://github.com/gso-bench/gso-experiments/tree/main/results/reports",
+  "metric": "gm_speedup_patch_base",
+  "description": "Média geométrica do speedup do patch público contra o baseline no harness oficial do GSO.",
+  "targets": {
+    "tornado-4d4c1e0": [
+      {"model": "claude-fable-5-xhigh", "speedup": 1.8125264743720788},
+      {"model": "gpt-6-astra-xhigh", "speedup": 1.378921},
+      {"model": "claude-fable-5.1-xhigh", "speedup": 1.3566058470208575},
+      {"model": "gpt-5.6-sol-xhigh", "speedup": 1.1107483717492874}
+    ],
+    "pydantic-c2647ab": [
+      {"model": "gpt-5.5-xhigh", "speedup": 4.706816296564226},
+      {"model": "claude-fable-5-xhigh", "speedup": 4.695269250663237},
+      {"model": "gpt-6-astra-xhigh", "speedup": 4.539096576344155},
+      {"model": "claude-opus-4.7", "speedup": 4.269246375454935},
+      {"model": "claude-fable-5.1-xhigh", "speedup": 4.177231736153775},
+      {"model": "gpt-5.4-xhigh", "speedup": 4.086672106828291},
+      {"model": "claude-opus-4.6-high", "speedup": 3.980671877029678},
+      {"model": "gpt-5.6-sol-xhigh", "speedup": 3.8446530172177136},
+      {"model": "claude-opus-4.5", "speedup": 3.7732341958879316}
+    ]
+  }
+}

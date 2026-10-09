@@ -18,7 +18,7 @@
 - Every prompt/response must be persisted under `results/` as experiment data (transcripts).
 - Population ~8, generations 10–15, elitism 1, tournament — defaults in config; budget parity across conditions is an experiment-phase concern, not enforced here.
 - Repo language: code/comments/docstrings in English (paper is English); commit messages conventional (`feat:`, `test:`, `chore:`).
-- Workdir for every command below: `/Users/andreramos/Dev/algoritmos-geneticos-com-llm` unless stated.
+- Workdir for every command below: the repository root unless stated.
 
 ---
 
