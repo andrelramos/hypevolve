@@ -8,5 +8,8 @@ results/
 targets/*
 !targets/.gitkeep
 .venv/
+.DS_Store
+.ai-jail
+uv.lock.benchmarks/
 experiments/configs/*.yaml
 !experiments/configs/*.template.yaml
