@@ -1,21 +1,13 @@
-# Regras para agentes neste repositório
+# Repository agent instructions
 
-## Segurança de estado e corretude
+## State safety and correctness
 
-- Use `icontract` para pré-condições, pós-condições e invariantes nas fronteiras
-  que criam, transitam ou persistem o estado de uma execução.
-- Um contrato deve expressar uma propriedade observável, sem efeitos colaterais;
-  não duplique validação de tipos já coberta por anotações.
-- Não introduza estados de sessão fora de `queued`, `running`, `completed` e
-  `failed`. Uma execução concluída ou falha não pode voltar a `running`.
-- Execute `make lint` antes de entregar alterações Python. Esse gate usa UV,
-  roda `pyright` em modo estrito e `crosshair check hypevolve/contracts.py` para procurar
-  violações dos contratos `icontract` por execução simbólica.
-- Todo código novo ou modificado em `hypevolve/` deve ter tipagem completa;
-  não use `Any`, `# type: ignore` ou cast para silenciar o Pyright sem uma
-  justificativa local e verificável.
+- Use `icontract` for preconditions, postconditions, and invariants at boundaries that create, transition, or persist execution state.
+- A contract must express an observable property without side effects; do not duplicate type validation already covered by annotations.
+- Do not introduce session states outside `queued`, `running`, `completed`, and `failed`. A completed or failed execution must never return to `running`.
+- Run `make lint` before delivering Python changes. This gate uses UV, runs strict Pyright, and runs `crosshair check hypevolve/contracts.py` to find symbolic contract violations.
+- All new or modified code under `hypevolve/` must be fully typed. Do not use `Any`, `# type: ignore`, or casts to silence Pyright without a local, verifiable justification.
 
-## Navegação de código
+## Code navigation
 
-Se existir `.codegraph/` na raiz, use `codegraph explore` antes de grep/find
-para localizar ou entender símbolos.
+If `.codegraph/` exists at the repository root, run `codegraph explore` before grep/find to locate or understand symbols.

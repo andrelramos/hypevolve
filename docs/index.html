@@ -24,13 +24,22 @@
       <div class="hero-copy">
         <p class="eyebrow"><span class="pulse"></span><span data-i18n="eyebrow">PESQUISA EM ANDAMENTO · SOFTWARE + IA</span></p>
         <h1 data-i18n="heroTitle">E se um LLM pudesse <em>aprender com a própria linhagem</em>?</h1>
-        <p class="hero-lede" data-i18n="heroLede">HypEvolve combina hipóteses testáveis, execução determinística e um algoritmo genético para descobrir otimizações de código que uma sequência de tentativas isoladas tende a perder.</p>
+        <p class="hero-lede" data-i18n="heroLede">HypEvolve combina hipóteses testáveis, execução determinística e um algoritmo genético para descobrir otimizações de código que uma sequência de tentativas isoladas tende a perder.</p><p class="name-note" data-i18n="nameMeaning"><strong>Hyp</strong> vem de <em>hypothesis</em>; <strong>Evolve</strong> significa evoluir: hipóteses de código testáveis evoluem por gerações medidas.</p>
         <div class="hero-actions"><a class="button primary" href="#results" data-i18n="seeResults">Ver os resultados</a><a class="text-link" href="https://github.com/gso-bench/gso" target="_blank" rel="noreferrer" data-i18n="benchmark">Conhecer o benchmark GSO ↗</a></div>
         <div class="hero-stats"><div><strong>3,23×</strong><span data-i18n="statOne">melhor speedup GA</span></div><div><strong>26</strong><span data-i18n="statTwo">chamadas por braço</span></div><div><strong>5</strong><span data-i18n="statThree">gerações acompanhadas</span></div></div>
       </div>
-      <div class="hero-visual" aria-label="Animated genetic lineage visualization">
-        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="gene-node node-root"><b>H₀</b><small>hipótese</small></div><div class="gene-node node-a"><b>H₁</b><small>teste</small></div><div class="gene-node node-b"><b>H₂</b><small>teste</small></div><div class="gene-node node-best"><b>H*</b><small>3,23×</small></div><svg class="hero-lines" viewBox="0 0 500 460" aria-hidden="true"><path d="M138 226C205 184 254 120 322 105M138 236C220 253 270 215 365 224M322 105C371 112 365 184 365 224M365 224C380 282 360 337 275 359"/></svg><div class="scanline"></div>
-        <div class="visual-caption"><span class="legend-dot mint"></span><span data-i18n="visualCaption">cada geração preserva o que foi medido</span></div>
+      <div class="hero-visual evolution-visual" aria-label="Animated evolutionary lineage visualization">
+        <div class="evolution-caption"><span class="legend-dot mint"></span><span data-i18n="visualCaption">cada geração preserva o que foi medido</span></div>
+        <div class="evolution-head"><span>HYPOTHESIS LINEAGE</span><b>fitness / generation</b></div>
+        <div class="evolution-track" aria-hidden="true">
+          <div class="generation-step" data-generation="0"><div class="candidate-points"><i></i><i></i><i></i><i></i></div><div class="generation-node"><b>g0</b><small>baseline</small></div><div class="score-bubble">+0.00×</div></div>
+          <div class="generation-step" data-generation="1"><div class="candidate-points"><i></i><i></i><i></i><i></i></div><div class="generation-node"><b>g1</b><small>test</small></div><div class="score-bubble">+0.12×</div></div>
+          <div class="generation-step" data-generation="2"><div class="candidate-points"><i></i><i></i><i></i><i></i></div><div class="generation-node"><b>g2</b><small>select</small></div><div class="score-bubble">+0.46×</div></div>
+          <div class="generation-step" data-generation="3"><div class="candidate-points"><i></i><i></i><i></i><i></i></div><div class="generation-node"><b>g3</b><small>inherit</small></div><div class="score-bubble">+1.06×</div></div>
+          <div class="generation-step" data-generation="4"><div class="candidate-points"><i></i><i></i><i></i><i></i></div><div class="generation-node winner"><b>g4</b><small>3.23×</small></div><div class="score-bubble">winner · 3.23×</div></div>
+        </div>
+        <div class="evolution-call"><span class="call-arrow">↗</span><span data-i18n="generationCall">winner selected → next generation inherits its workspace</span></div>
+        <div class="scanline"></div>
       </div>
     </section>
 
@@ -56,7 +65,7 @@
     <section id="results" class="section results-section dark-panel reveal">
       <div class="section-kicker"><span>04</span><span data-i18n="resultsKicker">O que já observamos</span></div>
       <div class="section-heading"><h2 data-i18n="resultsTitle">A linhagem encontra combinações que o controle não alcança</h2><p data-i18n="resultsLead">Os gráficos separam três fontes: GA local, amostragem local e execuções públicas do GSO. A faixa laranja mostra a distribuição pública; os pontos individuais preservam a proveniência de cada modelo.</p></div>
-      <div class="chart-grid"><figure class="chart-card"><div class="chart-head"><div><span class="chart-label">TORNADO · 4D4C1E0</span><h3 data-i18n="chartLineTitle">Trajetória por chamada</h3></div><span class="chart-value">3,23×</span></div><div id="trajectory-tornado" class="chart" role="img" aria-label="Tornado trajectory chart"></div><figcaption data-i18n="tornadoCaption">GA Claude Sonnet contra amostragem local e quatro execuções públicas.</figcaption></figure><figure class="chart-card"><div class="chart-head"><div><span class="chart-label">PYDANTIC · C2647AB</span><h3 data-i18n="chartBarTitle">Comparação de resultados</h3></div><span class="chart-value gold">4,71×</span></div><div id="bars-pydantic" class="chart bars" role="img" aria-label="Pydantic comparison chart"></div><figcaption data-i18n="pydanticCaption">O braço GA do pydantic foi interrompido por falta de créditos e não é plotado; aparecem apenas o controle local e nove execuções públicas.</figcaption></figure></div>
+      <div class="chart-grid"><figure class="chart-card"><div class="chart-head"><div><span class="chart-label">TORNADO · 4D4C1E0</span><h3 data-i18n="chartLineTitle">Trajetória por chamada</h3></div><span class="chart-value">3,23×</span></div><div id="trajectory-tornado" class="chart" role="img" aria-label="Tornado trajectory chart"></div><figcaption data-i18n="tornadoCaption">GA Claude Sonnet contra amostragem local e quatro execuções públicas.</figcaption></figure></div>
       <div class="result-callout"><strong data-i18n="resultCalloutTitle">O resultado mais limpo</strong><p data-i18n="resultCallout">No tornado, o GA chegou a 3,23× contra 1,57× da melhor tentativa independente — 2,05× melhor com o mesmo número de chamadas. É evidência de composição, não ainda uma prova universal.</p></div>
     </section>
 
