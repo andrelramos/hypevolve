@@ -46,6 +46,11 @@ uv run hypevolve run \
 
 The CLI stores portable JSON artifacts under `results/<session>/`. The FastAPI panel reads the same artifacts through its REST API and exposes generations, prompts, agent output, deterministic test output, and editable hypotheses.
 
+For direct use by coding agents, run `uv run hypevolve mcp`. It exposes the
+same execution store through dependency-free MCP tools over stdio; see
+[`docs/web-control-plane.md`](docs/web-control-plane.md#mcp-for-coding-agents)
+for registration and tool usage.
+
 ## Quality gates
 
 - Python dependencies are managed with UV and locked in `uv.lock`.

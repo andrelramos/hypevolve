@@ -66,10 +66,11 @@ def config_from_options(*, name: str, source_path: str, test_cmd: str, bench_cmd
         agent["model"] = model
     if harness not in {"codex", "claude"}:
         raise ValueError("harness must be 'codex' or 'claude'")
+    effective_population = min(population_size, max_hypotheses) if max_hypotheses else population_size
     return ExperimentConfig(
         name=name, source_path=str(Path(source_path).resolve()), test_cmd=test_cmd, bench_cmd=bench_cmd,
         agent_name=harness, agents={harness: agent}, generations=generations,
-        population_size=min(population_size, max_hypotheses) if max_hypotheses else population_size,
-        elite_count=1, tournament_k=2, max_hypotheses=max_hypotheses,
+        population_size=effective_population, elite_count=1,
+        tournament_k=min(2, effective_population), max_hypotheses=max_hypotheses,
         init_prompt=initial_prompt,
     )

@@ -14,7 +14,7 @@ from .workspace import WorkspaceManager
 
 
 def main() -> None:
-    command_names = {"sessions", "show", "generations", "individual", "hypotheses", "hypothesis-add", "hypothesis-edit", "hypothesis-remove", "run", "serve"}
+    command_names = {"sessions", "show", "generations", "individual", "hypotheses", "hypothesis-add", "hypothesis-edit", "hypothesis-remove", "run", "serve", "mcp"}
     if len(sys.argv) > 1 and sys.argv[1] in command_names:
         from .cli import main as cli_main
         cli_main(sys.argv[1:])

@@ -51,6 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
     serve = commands.add_parser("serve", help="start the web panel and REST API")
     serve.add_argument("--host", default="127.0.0.1")
     serve.add_argument("--port", default=8000, type=int)
+    commands.add_parser("mcp", help="serve agent tools over MCP stdio")
     return parser
 
 
@@ -69,6 +70,10 @@ def main(argv: list[str] | None = None) -> None:
         import uvicorn
         from .server import create_app
         uvicorn.run(create_app(args.results_root), host=args.host, port=args.port)
+        return
+    if args.command == "mcp":
+        from .mcp import serve_stdio
+        serve_stdio(args.results_root)
         return
     if args.command == "run":
         session_id = args.name or datetime.now(UTC).strftime("run-%Y%m%dT%H%M%SZ")
