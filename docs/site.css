@@ -11,3 +11,11 @@
 
 /* Keep the generation description below the node, with a deliberate gap. */
 .score-bubble{top:124px}
+
+/* Give result charts the full section width on larger screens. */
+@media(min-width:851px){
+  .chart-grid{grid-template-columns:1fr;gap:24px}
+  .chart{height:360px;overflow:visible}
+  .chart svg{min-width:0}
+  .chart-card figcaption{font-size:.86rem}
+}
