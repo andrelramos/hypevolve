@@ -11,3 +11,8 @@
 ## Code navigation
 
 If `.codegraph/` exists at the repository root, run `codegraph explore` before grep/find to locate or understand symbols.
+
+## Language policy
+
+- All repository code and newly added repository text must be written in English.
+- Every text added to the project website must be translated for all supported site languages: Portuguese, English, Spanish, Chinese, and Japanese.
