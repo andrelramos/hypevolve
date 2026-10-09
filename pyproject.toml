@@ -3,13 +3,13 @@ name = "hypevolve"
 version = "0.1.0"
 description = "GA orchestration of CLI coding agents for performance-driven software improvement"
 requires-python = ">=3.12"
-dependencies = ["pyyaml>=6.0", "scipy>=1.13"]
+dependencies = ["pyyaml>=6.0", "scipy>=1.13", "fastapi>=0.115", "uvicorn>=0.30", "icontract>=2.7.3"]
 
 [project.scripts]
 hypevolve = "hypevolve.__main__:main"
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "crosshair-tool>=0.0.98", "pyright>=1.1.390"]
 
 [build-system]
 requires = ["setuptools>=68"]
@@ -22,3 +22,16 @@ include = ["hypevolve*"]
 testpaths = ["tests"]
 norecursedirs = ["results", "targets", "experiments", "workspaces"]
 markers = ["slow: end-to-end smoke tests (deselect with '-m \"not slow\"')"]
+
+[tool.pyright]
+include = ["hypevolve"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+reportMissingTypeStubs = "none"
+reportUnknownParameterType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownLambdaType = "none"
+reportMissingTypeArgument = "none"
+reportAttributeAccessIssue = "none"

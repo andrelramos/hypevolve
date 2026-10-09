@@ -72,3 +72,25 @@ def test_empty_parent_times_is_baseline(tmp_path):
     r = e.evaluate(ws, [])
     assert r.fitness == 1.0
     assert r.p_value is None
+
+
+def test_paired_measurement_times_both_trees_alternately(tmp_path):
+    """Interleaving is what makes the comparison robust to machine drift."""
+    child = tmp_path / "child"
+    ref = tmp_path / "ref"
+    for d, secs in ((child, 0.002), (ref, 0.01)):
+        d.mkdir()
+        make_project(d, PASS_TEST, bench_printing(secs))
+    e = Evaluator(
+        test_cmd=f"{PY} -m pytest test_ok.py -q",
+        bench_cmd=f"{PY} bench.py",
+        repeats=6,
+        warmup=0,
+        timeout_seconds=60,
+    )
+    r = e.evaluate_paired(str(child), str(ref), parent_times=[])
+    assert r.passed
+    assert len(r.child_times) == 6 and len(r.reference_times) == 6
+    assert r.significant_vs_base
+    assert r.speedup_vs_base > 2.0
+    assert r.fitness == 1.0  # no parent to beat yet

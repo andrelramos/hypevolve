@@ -4,6 +4,8 @@ from pathlib import Path
 
 import yaml
 
+from .contracts import has_valid_evolution_limits
+
 
 def _defaults() -> dict:
     return {
@@ -17,6 +19,9 @@ def _defaults() -> dict:
         "timeout_seconds": 120,
         "alpha": 0.05,
         "seed": 42,
+        "max_parallel_agents": 1,
+        "fitness_mode": "relative",
+        "max_hypotheses": 0,
     }
 
 
@@ -41,6 +46,19 @@ class ExperimentConfig:
     timeout_seconds: int = 120
     alpha: float = 0.05
     seed: int = 42
+    max_parallel_agents: int = 1
+    fitness_mode: str = "relative"
+    protected_files: list[str] = field(default_factory=list)
+    init_prompt: str = ""
+    mutation_prompt: str = ""
+    max_hypotheses: int = 0
+
+    def __post_init__(self) -> None:
+        if not has_valid_evolution_limits(
+            self.generations, self.population_size, self.elite_count,
+            self.tournament_k, self.max_hypotheses,
+        ):
+            raise ValueError("invalid evolution limits")
 
     @classmethod
     def load(cls, path: str) -> "ExperimentConfig":

@@ -10,8 +10,15 @@ def elites(population: list[Individual], n: int) -> list[Individual]:
 
 
 def tournament(population: list[Individual], k: int, rng: random.Random) -> Individual:
+    return tournament_with_log(population, k, rng)[0]
+
+
+def tournament_with_log(
+    population: list[Individual], k: int, rng: random.Random
+) -> tuple[Individual, list[Individual]]:
+    """Same draw as `tournament`, but also returns who competed."""
     contenders = rng.sample(population, min(k, len(population)))
-    return max(contenders, key=lambda i: i.fitness)
+    return max(contenders, key=lambda i: i.fitness), contenders
 
 
 def select_parents(

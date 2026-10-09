@@ -1,4 +1,5 @@
 """Isolated per-individual workspace copies of the target project."""
+import filecmp
 import shutil
 from pathlib import Path
 
@@ -49,3 +50,22 @@ class WorkspaceManager:
             shutil.rmtree(dest)
         shutil.copytree(src, dest, ignore=shutil.ignore_patterns(".git"))
         return dest
+
+    def integrity_check(self, individual_id: int, protected_files: list[str]) -> tuple[bool, list[str]]:
+        """Check whether protected files differ from source workspace.
+
+        Returns (ok, list_of_changed_files).
+        """
+        ws = self._path_for(individual_id)
+        changed: list[str] = []
+        for rel in protected_files:
+            ws_file = ws / rel
+            src_file = self.source / rel
+            if not ws_file.exists():
+                changed.append(rel)
+                continue
+            if not src_file.exists():
+                continue
+            if not filecmp.cmp(str(ws_file), str(src_file), shallow=False):
+                changed.append(rel)
+        return (len(changed) == 0, changed)
