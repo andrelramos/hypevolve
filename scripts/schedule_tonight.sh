@@ -3,7 +3,8 @@
 # rebuild analysis + report. Sequential on purpose: two arms benchmarking at once
 # would contaminate both timings.
 set -u
-cd /Users/andreramos/Dev/algoritmos-geneticos-com-llm
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
 PY=.venv/bin/python
 LOG=results/run_arms.log
 AT="${1:-21:00}"

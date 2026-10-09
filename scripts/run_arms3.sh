@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Four arms, one agent (claude CLI), absolute fitness. Sequential: bench timings must not overlap.
 set -u
-cd /Users/andreramos/Dev/algoritmos-geneticos-com-llm
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
 PY=.venv/bin/python
 
 run () {  # run <config> <mode> <suffix>

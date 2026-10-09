@@ -2,7 +2,8 @@
 # Remaining arms: the two control arms + the two absolute-fitness GA arms.
 # Sequential on purpose: benchmark timings must not overlap.
 set -u
-cd /Users/andreramos/Dev/algoritmos-geneticos-com-llm
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
 PY=.venv/bin/python
 
 run () {  # run <config> <mode> <suffix> [extra...]
