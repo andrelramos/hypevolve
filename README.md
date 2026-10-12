@@ -16,19 +16,20 @@ flowchart TD
     F4["04 · GSO-faithful infrastructure<br/>more rigorous execution and comparison"]
     F5["05 · Multiple models<br/>compare agents, results, and GSO"]
     F6["06 · Recognized benchmarks<br/>replicate experiments across community benchmarks"]
-    F7["07 · Paper<br/>document method, data, and observed behavior"]
+    F7["07 · Cybersecurity applications<br/>experiment with vulnerability analysis"]
+    F8["08 · Paper<br/>document method, data, and observed behavior"]
 
-    F1 --> F2 --> F3 --> F4 --> F5 --> F6 --> F7
+    F1 --> F2 --> F3 --> F4 --> F5 --> F6 --> F7 --> F8
 
     classDef done fill:#123c3b,stroke:#6cf0c2,color:#eafcf5
     classDef next fill:#332a1b,stroke:#ffca6b,color:#fff4dc
     classDef future fill:#18253d,stroke:#8ab8ff,color:#eaf2ff
     class F1,F2 done
     class F3 next
-    class F4,F5,F6,F7 future
+    class F4,F5,F6,F7,F8 future
 ```
 
-Phases 1 and 2 have been completed. The next objective is to turn the experiment into MCP/CLI tools that can be used in other projects; afterward, the research advances toward more faithful infrastructure, cross-model comparison, replication across community-recognized benchmarks, and a paper.
+Phases 1 and 2 have been completed. The next objective is to turn the experiment into MCP/CLI tools that can be used in other projects; afterward, the research advances toward more faithful infrastructure, cross-model comparison, replication across community-recognized benchmarks, cybersecurity applications for vulnerability analysis, and a paper.
 
 ## Research idea
 
