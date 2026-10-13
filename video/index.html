@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<title>HypEvolve explainer</title>
+<style>
+:root{
+  --bg:#F4F3EF; --ink:#14161C; --mut:#6A6F7C;
+  --acc:#4F6DF5; --acc2:#7C9CFF; --ok:#1FA672; --okp:#51D39A; --bad:#E5484D; --badp:#FF7979;
+  --pbg:#10131a; --pcard:#171c27; --pline:#354055; --pink:#e9edff; --pmut:#9aa6c3;
+  --sans:-apple-system,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",Menlo,Monaco,monospace;
+}
+html[lang="zh"]{--sans:-apple-system,"SF Pro Display","PingFang SC","Hiragino Sans GB",sans-serif;--mono:"SF Mono",Menlo,"PingFang SC",monospace}
+html[lang="ja"]{--sans:-apple-system,"SF Pro Display","Hiragino Sans","Hiragino Kaku Gothic ProN",sans-serif;--mono:"SF Mono",Menlo,"Hiragino Sans",monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:#000;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg);font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+#b1{width:760px;height:760px;background:#DCE3FF;left:-180px;top:-260px}
+#b2{width:680px;height:680px;background:#D9F3E8;right:-200px;bottom:-280px}
+.scene{position:absolute;inset:0;display:none}
+.head{position:absolute;left:0;right:0;padding:0 100px;text-align:center;margin:0;font-weight:700;letter-spacing:-.025em;font-size:64px;line-height:1.1;white-space:nowrap}
+.head .mut{display:block;color:var(--mut);font-weight:500;font-size:.625em;margin-top:14px;letter-spacing:-.01em}
+.acc{color:var(--acc)}
+#wm,#s7w{font-family:"SF Pro Display",-apple-system,"Helvetica Neue",sans-serif}
+
+/* terminal */
+.term{position:absolute;background:#0E1117;border-radius:18px;box-shadow:0 40px 90px rgba(20,22,40,.28),0 0 0 1px rgba(255,255,255,.04) inset;overflow:hidden;color:#E6E9F2;font-family:var(--mono)}
+.tbar{height:46px;display:flex;align-items:center;gap:9px;padding:0 18px;background:#161A22;border-bottom:1px solid #232836}
+.tbar i{width:13px;height:13px;border-radius:50%;display:block}
+.tbar i:nth-child(1){background:#FF5F57}.tbar i:nth-child(2){background:#FEBC2E}.tbar i:nth-child(3){background:#28C840}
+.tbar span{flex:1;text-align:center;color:#7D8597;font:500 17px var(--sans);margin-right:60px}
+.tbody{padding:30px 34px;font-size:26px;line-height:1.6;white-space:pre}
+.pr{color:var(--acc2)} .dim{color:#6E7687} .g{color:var(--okp)} .y{color:#FFCA6B}
+.caret{display:inline-block;width:13px;height:28px;background:#E6E9F2;vertical-align:-5px;margin-left:2px}
+.lbl{position:absolute;font:600 26px var(--sans);text-align:center;width:520px;color:var(--ink)}
+.lbl b{color:var(--ok)}
+
+/* scene 2 */
+#wm{position:absolute;left:0;right:0;top:330px;display:flex;justify-content:center;font-weight:800;letter-spacing:-.04em;font-size:170px;line-height:1}
+#wm .w{position:relative;display:block}
+#wm .w small{position:absolute;left:-60px;right:-60px;top:190px;text-align:center;font:500 34px var(--sans);letter-spacing:0;color:var(--mut)}
+#wm .w2{color:var(--acc)}
+#ga{position:absolute;left:0;top:0;width:1920px;height:1080px}
+#gacap{top:860px;font-size:38px;font-weight:600;letter-spacing:-.01em}
+#gacap .mut{font-size:.79em}
+
+/* scene 3 */
+#s3l{position:absolute;left:130px;top:250px;width:640px}
+#s3l h2{margin:0;font-size:60px;line-height:1.08;letter-spacing:-.025em}
+#s3l p{margin:22px 0 0;color:var(--mut);font-size:30px;font-weight:500}
+.bul{margin-top:26px;font-size:32px;font-weight:600;display:flex;gap:16px;align-items:flex-start;line-height:1.25}
+.bul .ic{flex:0 0 46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:24px;color:#fff;margin-top:-4px}
+.bul small{display:block;font-size:24px;color:var(--mut);font-weight:500;margin-top:4px}
+.hl{position:absolute;left:24px;right:24px;height:42px;border-radius:8px;opacity:0}
+
+/* scene 4 */
+.card{position:absolute;top:360px;width:385px;height:330px;background:#fff;border-radius:22px;padding:34px 32px;box-shadow:0 20px 50px rgba(20,22,40,.08);border:2px solid transparent}
+.card .n{font:700 22px var(--mono);color:var(--acc)}
+.card h3{margin:18px 0 14px;font-size:44px;letter-spacing:-.02em;white-space:nowrap}
+.card p{margin:0;font-size:25px;line-height:1.38;color:#3C414D;font-weight:500}
+.card .ico{position:absolute;right:28px;top:28px;width:56px;height:56px;border-radius:16px;background:#EEF1FF;display:grid;place-items:center;font-size:28px}
+
+/* statistical gate */
+.gl2{position:absolute;left:150px;width:440px;font-size:30px;font-weight:700;line-height:1.2}
+.gl2 small{display:block;font-size:22px;color:var(--mut);font-weight:500;margin-top:6px}
+.gplot{position:absolute;left:620px;width:840px;height:150px;background:#fff;border-radius:18px;box-shadow:0 14px 34px rgba(20,22,40,.07)}
+.gv{position:absolute;left:1490px;height:64px;padding:0 24px;border-radius:16px;display:flex;align-items:center;gap:10px;font-size:26px;font-weight:700;white-space:nowrap}
+.gv.ok{background:#E5F7EE;color:#0F7A50} .gv.no{background:#FDECEC;color:#B4232A}
+.gv span{font:600 22px var(--mono);opacity:.85}
+#gnote{position:absolute;right:120px;top:985px;font-size:20px;color:var(--mut)}
+
+/* panel (faithful to hypevolve/server.py _PANEL) */
+#win{position:absolute;left:210px;top:180px;width:1500px;height:860px;border-radius:16px;overflow:hidden;background:var(--pbg);box-shadow:0 50px 110px rgba(20,22,40,.30)}
+.cbar{height:44px;background:#1D2230;display:flex;align-items:center;gap:9px;padding:0 16px}
+.cbar i{width:12px;height:12px;border-radius:50%}
+.cbar i:nth-child(1){background:#FF5F57}.cbar i:nth-child(2){background:#FEBC2E}.cbar i:nth-child(3){background:#28C840}
+.url{margin-left:22px;flex:1;max-width:620px;height:28px;border-radius:8px;background:#11151E;color:#9aa6c3;font:500 15px var(--sans);display:flex;align-items:center;padding-left:14px}
+#pv{position:absolute;left:0;top:44px;width:1100px;transform-origin:0 0;transform:scale(1.3636);color:var(--pink);font:14px var(--sans)}
+#pv header{padding:16px 28px;border-bottom:1px solid var(--pline);display:flex;gap:14px;align-items:center}
+#pv h1{font-size:20px;margin:0}
+#pv .muted{color:var(--pmut)}
+#pv .sel{background:#222a3a;color:var(--pink);border:1px solid var(--pline);border-radius:6px;padding:6px 10px;margin-left:auto}
+#pv main{padding:16px 24px}
+#pv .pc{background:var(--pcard);border:1px solid var(--pline);border-radius:10px;padding:14px 18px;margin-bottom:14px}
+#pv .timeline{padding:30px 12px 6px}
+#pv .track{position:relative;display:flex;align-items:center;gap:60px}
+#pv .track:before{content:"";position:absolute;left:0;right:0;height:3px;background:var(--pline);top:20px}
+#pv .generation{position:relative;text-align:center;color:var(--pmut)}
+#pv .dots{display:flex;gap:10px;margin-top:10px;justify-content:center}
+#pv .dot{z-index:1;width:18px;height:18px;border-radius:50%;background:var(--acc2);border:3px solid var(--pcard)}
+#pv .dot.fail{background:var(--badp)}
+#pv .detail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;min-height:280px}
+#pv h2{font-size:16px;margin:4px 0 10px} #pv h3{font-size:13px;margin:10px 0 6px}
+#pv p{margin:0 0 8px;line-height:1.45}
+#pv pre{white-space:pre-wrap;background:#0c0f15;padding:10px 12px;border-radius:7px;margin:0;font:12px var(--mono);line-height:1.5}
+#pv .ok{color:var(--okp)} #pv .bad{color:var(--badp)}
+#ring{position:absolute;width:34px;height:34px;border-radius:50%;border:3px solid #fff;opacity:0;pointer-events:none}
+#cur{position:absolute;left:0;top:0;width:34px;height:34px;opacity:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.ph{top:62px;font-size:52px}
+
+/* scene 6 */
+.rc{position:absolute;top:300px;width:790px;height:560px;background:#fff;border-radius:26px;padding:44px 48px;box-shadow:0 24px 60px rgba(20,22,40,.09)}
+.rc .k{font:700 19px var(--sans);letter-spacing:.12em;color:var(--mut)}
+.rc .row{margin-top:40px}
+.rc .row .nm{font-size:27px;font-weight:600;display:flex;justify-content:space-between}
+.rc .row .nm b{font-variant-numeric:tabular-nums;font-size:34px}
+.rc .bar{margin-top:12px;height:30px;border-radius:9px;background:#EFEEEA;overflow:hidden}
+.rc .bar div{height:100%;border-radius:9px;width:0}
+.rc .foot{position:absolute;left:48px;right:340px;bottom:44px;font-size:24px;color:var(--mut);font-weight:500;line-height:1.3}
+.rc .badge{position:absolute;right:44px;bottom:34px;background:#E5F7EE;color:#0F7A50;font-weight:700;font-size:30px;padding:12px 22px;border-radius:14px;white-space:nowrap}
+#s6n{top:905px;font-size:23px;font-weight:500;color:var(--mut);letter-spacing:0}
+
+/* scene 7 */
+.chip{position:absolute;top:560px;height:84px;padding:0 34px;border-radius:42px;background:#fff;box-shadow:0 14px 34px rgba(20,22,40,.09);display:flex;align-items:center;font-size:34px;font-weight:600;white-space:nowrap}
+.chip i{font-style:normal;margin-right:14px}
+#cmd{position:absolute;left:50%;top:660px;height:92px;padding:0 40px;border-radius:20px;background:#0E1117;color:#E6E9F2;font:500 38px var(--mono);display:flex;align-items:center;white-space:pre}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="blob" id="b1"></div><div class="blob" id="b2"></div>
+
+  <!-- 1 · HOOK -->
+  <section class="scene" id="s1" data-s="0" data-e="9.5">
+    <h1 class="head" id="s1h1" style="top:120px" data-t="s1h1"></h1>
+    <h1 class="head" id="s1h2" style="top:120px" data-t="s1h2"></h1>
+    <h1 class="head" id="s1h3" style="top:110px" data-t="s1h3"></h1>
+    <div class="term" id="s1t0" style="left:410px;top:300px;width:1100px;height:560px">
+      <div class="tbar"><i></i><i></i><i></i><span data-t="term1"></span></div>
+      <div class="tbody"><span class="pr">› </span><span id="s1typed"></span><span class="caret" id="s1caret"></span><span id="s1think" class="dim"></span><span id="s1ans"></span></div>
+    </div>
+    <div class="term" id="s1t1" style="left:410px;top:300px;width:1100px;height:560px">
+      <div class="tbar"><i></i><i></i><i></i><span data-t="term1"></span></div>
+      <div class="tbody" id="s1b1"></div>
+    </div>
+    <div class="term" id="s1t2" style="left:410px;top:300px;width:1100px;height:560px">
+      <div class="tbar"><i></i><i></i><i></i><span data-t="term1"></span></div>
+      <div class="tbody" id="s1b2"></div>
+    </div>
+    <div class="lbl" id="s1l0" style="left:140px;top:770px"></div>
+    <div class="lbl" id="s1l1" style="left:700px;top:770px"></div>
+    <div class="lbl" id="s1l2" style="left:1260px;top:770px"></div>
+  </section>
+
+  <!-- 2 · IDEA -->
+  <section class="scene" id="s2" data-s="9.5" data-e="18">
+    <h1 class="head" id="s2q" style="top:400px;font-size:84px" data-t="s2q"></h1>
+    <div id="wm"><span class="w w1">Hyp<small id="wl1" data-t="wl1"></small></span><span class="w w2">Evolve<small id="wl2" data-t="wl2"></small></span></div>
+    <svg id="ga" viewBox="0 0 1920 1080"></svg>
+    <h1 class="head" id="gacap" data-t="gacap"></h1>
+  </section>
+
+  <!-- 3 · START FROM YOUR AGENT -->
+  <section class="scene" id="s3" data-s="18" data-e="28">
+    <div id="s3l">
+      <h2 id="s3h" data-t="s3h"></h2>
+      <p id="s3p" data-t="s3p"></p>
+      <div style="height:34px"></div>
+      <div class="bul" id="s3b0" style="font-size:30px;color:var(--mut);font-weight:600" data-t="s3b0"></div>
+      <div class="bul" id="s3b1"><span class="ic" style="background:var(--ok)">✓</span><span data-t="s3b1"></span></div>
+      <div class="bul" id="s3b2"><span class="ic" style="background:var(--acc)">⏱</span><span data-t="s3b2"></span></div>
+      <div class="bul" id="s3b3" style="color:var(--acc);font-size:36px;margin-top:40px" data-t="s3b3"></div>
+    </div>
+    <div class="term" id="s3t" style="left:820px;top:200px;width:980px;height:680px">
+      <div class="tbar"><i></i><i></i><i></i><span data-t="term3"></span></div>
+      <div class="tbody" style="position:relative;font-size:25px"><div class="hl" id="hl1" style="top:146px;background:rgba(81,211,154,.16)"></div><div class="hl" id="hl2" style="top:186px;background:rgba(124,156,255,.18)"></div><span class="pr">› </span><span id="s3typed"></span><span class="caret" id="s3caret"></span>
+<span id="s3call"><span class="y">⏺</span> hypevolve · <b>start_evolution</b></span>
+<span id="a0">   <span class="dim">target      </span> ./<span data-t="dir"></span></span>
+<span id="a1">   <span class="dim">test_cmd    </span> <span class="g">pytest -q</span></span>
+<span id="a2">   <span class="dim">bench_cmd   </span> <span style="color:var(--acc2)">python bench.py</span></span>
+<span id="a3">   <span class="dim">generations </span> 4</span>
+<span id="a4">   <span class="dim">harness     </span> claude</span>
+<span id="s3res">  <span class="dim">↳</span> run-20261013T1304Z · <span class="y">running</span></span></div>
+    </div>
+  </section>
+
+  <!-- 4 · CYCLE -->
+  <section class="scene" id="s4" data-s="28" data-e="36">
+    <h1 class="head" id="s4h" style="top:170px" data-t="s4h"></h1>
+    <div class="card" id="c0" style="left:130px"><div class="ico">💡</div><div class="n">01</div><h3 data-t="c0h"></h3><p data-t="c0p"></p></div>
+    <div class="card" id="c1" style="left:545px"><div class="ico">🧪</div><div class="n">02</div><h3 data-t="c1h"></h3><p data-t="c1p"></p></div>
+    <div class="card" id="c2" style="left:960px"><div class="ico">⚖️</div><div class="n">03</div><h3 data-t="c2h"></h3><p data-t="c2p"></p></div>
+    <div class="card" id="c3" style="left:1375px"><div class="ico">🧬</div><div class="n">04</div><h3 data-t="c3h"></h3><p data-t="c3p"></p></div>
+    <svg id="s4svg" viewBox="0 0 1920 1080" style="position:absolute;inset:0">
+      <path id="loop" d="M1567 712 C1567 800 1520 800 1400 800 L520 800 C400 800 322 800 322 712" fill="none" stroke="#4F6DF5" stroke-width="4" stroke-linecap="round"/>
+      <path id="loopHead" d="M308 728 L322 708 L336 728" fill="none" stroke="#4F6DF5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle id="pulse" r="10" fill="#4F6DF5"/>
+    </svg>
+    <h1 class="head" id="s4f" style="top:850px;font-size:38px;font-weight:600" data-t="s4f"></h1>
+  </section>
+
+  <!-- 4b · STATISTICAL GATE -->
+  <section class="scene" id="sg" data-s="36" data-e="43">
+    <h1 class="head" id="gh" style="top:130px" data-t="gh"></h1>
+    <div class="gl2" id="gla" style="top:405px"><span data-t="candA"></span><small>σ = <span id="sda"></span></small></div>
+    <div class="gl2" id="glb" style="top:625px"><span data-t="candB"></span><small>σ = <span id="sdb"></span></small></div>
+    <div class="gplot" id="gpa" style="top:380px"></div>
+    <div class="gplot" id="gpb" style="top:600px"></div>
+    <svg id="gsvg" viewBox="0 0 1920 1080" style="position:absolute;inset:0"></svg>
+    <div class="gv ok" id="gva" style="top:423px">✓ <b data-t="gPass"></b><span id="pa"></span></div>
+    <div class="gv no" id="gvb" style="top:643px">✗ <b data-t="gBlock"></b><span id="pb"></span></div>
+    <h1 class="head" id="gf" style="top:820px;font-size:38px;font-weight:600" data-t="gf"></h1>
+    <div id="gnote" data-t="gNote"></div>
+  </section>
+
+  <!-- 5 · PANEL -->
+  <section class="scene" id="s5" data-s="43" data-e="54">
+    <h1 class="head ph" id="p1" data-t="p1"></h1>
+    <h1 class="head ph" id="p2" data-t="p2"></h1>
+    <h1 class="head ph" id="p3" data-t="p3"></h1>
+    <div id="win">
+      <div class="cbar"><i></i><i></i><i></i><div class="url">127.0.0.1:8000</div></div>
+      <div id="pv">
+        <header><h1>HypEvolve</h1><span class="muted" data-t="pSub"></span><span class="sel">tornado-4d4c1e0 · running ▾</span></header>
+        <main>
+          <section class="pc"><b>tornado-4d4c1e0</b><div class="muted" id="pmeta"></div>
+            <div class="timeline"><div class="track" id="ptrack"></div></div>
+          </section>
+          <section class="pc detail" id="pdetail"></section>
+        </main>
+      </div>
+      <div id="ring"></div>
+    </div>
+    <svg id="cur" viewBox="0 0 24 24"><path d="M4 2 L4 20 L9 15.5 L12.5 22.5 L15.5 21 L12 14 L19 14 Z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>
+  </section>
+
+  <!-- 6 · RESULTS -->
+  <section class="scene" id="s6" data-s="54" data-e="61.5">
+    <h1 class="head" id="s6h" style="top:150px" data-t="s6h"></h1>
+    <div class="rc" id="r0" style="left:140px">
+      <div class="k" data-t="r0k"></div>
+      <div class="row"><div class="nm">HypEvolve <b id="v0"></b></div><div class="bar"><div id="bar0" style="background:var(--acc)"></div></div></div>
+      <div class="row"><div class="nm" style="color:var(--mut)"><span data-t="best"></span> <b id="v1"></b></div><div class="bar"><div id="bar1" style="background:#B9BCC6"></div></div></div>
+      <div class="foot" data-t="r0foot"></div>
+      <div class="badge" id="bd0" data-t="bd0"></div>
+    </div>
+    <div class="rc" id="r1" style="left:990px">
+      <div class="k" data-t="r1k"></div>
+      <div class="row"><div class="nm">HypEvolve <b id="v2"></b></div><div class="bar"><div id="bar2" style="background:var(--ok)"></div></div></div>
+      <div class="row"><div class="nm" style="color:var(--mut)"><span data-t="direct"></span> <b id="v3"></b></div><div class="bar"><div id="bar3" style="background:#B9BCC6"></div></div></div>
+      <div class="foot" data-t="r1foot"></div>
+      <div class="badge" id="bd1" data-t="bd1"></div>
+    </div>
+    <h1 class="head" id="s6n" data-t="s6n"></h1>
+  </section>
+
+  <!-- 7 · POSSIBILITIES + CLOSE -->
+  <section class="scene" id="s7" data-s="61.5" data-e="67">
+    <h1 class="head" id="s7h" style="top:330px;font-size:86px" data-t="s7h"></h1>
+    <div class="chip" id="k0"><i>⚡</i><span data-t="k0"></span></div>
+    <div class="chip" id="k1"><i>💸</i><span data-t="k1"></span></div>
+    <div class="chip" id="k2"><i>🗄️</i><span data-t="k2"></span></div>
+    <div class="chip" id="k3"><i>🧠</i><span data-t="k3"></span></div>
+    <div class="chip" id="k4"><i>🛡️</i><span data-t="k4"></span></div>
+    <h1 class="head" id="s7w" style="top:330px;font-size:150px;font-weight:800;letter-spacing:-.045em">Hyp<span class="acc">Evolve</span></h1>
+    <h1 class="head" id="s7t" style="top:520px;font-size:44px;font-weight:500;color:var(--mut);letter-spacing:-.01em" data-t="s7t"></h1>
+    <div id="cmd"><span class="pr" style="color:var(--acc2)">$ </span><span id="cmdt"></span><span class="caret" id="cmdc" style="height:38px;width:18px;vertical-align:-7px"></span></div>
+  </section>
+</div>
+
+<script src="i18n.js"></script>
+<script>
+/* ---------- language ---------- */
+const LANG = (/[?&]lang=(pt|en|es|zh|ja)\b/.exec(location.search) || [, 'pt'])[1];
+const T = window.EXPLAINER_I18N[LANG];
+document.documentElement.lang = LANG;
+const tr = (key, vars = {}) => T[key].replace(/\{(\w+)\}/g, (_, k) => vars[k]);
+const fmt = (v, n) => { const s = v.toFixed(n); return T.decimal === ',' ? s.replace('.', ',') : s; };
+document.querySelectorAll('[data-t]').forEach(el => { el.innerHTML = T[el.dataset.t]; });
+
+/* ---------- deterministic micro-engine: everything is a pure function of t ---------- */
+// Scene timings are authored on a 67 s grid; SPEED stretches playback for reading time.
+const SPEED = 1.3, GATE_LEN = 7, END = 67;
+const $ = s => document.querySelector(s);
+const E = {
+  o3: x => 1 - Math.pow(1 - x, 3),
+  o5: x => 1 - Math.pow(1 - x, 5),
+  io: x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2,
+  back: x => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2); },
+};
+const K = (t, a, d, e = E.o3) => t <= a ? 0 : t >= a + d ? 1 : e((t - a) / d);
+const L = (a, b, p) => a + (b - a) * p;
+function fade(el, t, a, b, dy = 28, din = .6, dout = .45) {
+  const pi = K(t, a, din), po = b == null ? 0 : K(t, b, dout, E.io);
+  el.style.opacity = pi * (1 - po);
+  el.style.transform = `translateY(${L(dy, 0, pi) - 14 * po}px)`;
+}
+// Typing takes a fixed duration in every language so the keyboard ticks in the soundtrack stay in sync.
+function typed(el, text, t, a, dur) {
+  const chars = [...text], n = t < a ? 0 : Math.min(chars.length, Math.floor((t - a) / dur * chars.length));
+  el.textContent = chars.slice(0, n).join('');
+  return n >= chars.length;
+}
+const blink = (el, t, on = true) => { el.style.opacity = on && Math.floor(t * 2.2) % 2 === 0 ? 1 : 0; };
+const show = (el, v) => { el.style.display = v ? (el.classList.contains('scene') ? 'block' : '') : 'none'; };
+const esc = x => String(x).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+/* ---------- scene 1: static attempt terminals ---------- */
+const answer = (fix, from, to, pct) =>
+  `<span class="g">  ✓ ${T.done}</span> ${fix}\n<span class="dim">  benchmark:</span> ${fmt(from, 1)} µs → ${fmt(to, 1)} µs  <span class="g">${tr('faster', { p: fmt(pct, 1) + '%' })}</span>`;
+const S1_ANSWER = '\n' + answer(T.fix1, 62.8, 60.0, 4.2);
+$('#s1b1').innerHTML = `<span class="pr">› </span>${T.prompt1}\n` + answer(T.fix1, 62.8, 60.4, 3.9);
+$('#s1b2').innerHTML = `<span class="pr">› </span>${T.prompt1}\n` + answer(T.fix2, 62.8, 60.2, 4.1);
+[[4.2], [3.9], [4.1]].forEach(([p], i) => { $('#s1l' + i).innerHTML = `${tr('attempt', { n: i + 1 })} · <b>+${fmt(p, 1)}%</b>`; });
+
+/* ---------- scene 2: GA lineage diagram ---------- */
+const GA = { cols: 5, rows: 5, x0: 560, dx: 200, y0: 420, dy: 78, surv: [2, 0, 3, 1, 2], t0: 14.6, step: .62 };
+(function buildGA() {
+  const svg = $('#ga'); let h = '';
+  for (let g = 0; g < GA.cols - 1; g++) for (let r = 0; r < GA.rows; r++) {
+    const x1 = GA.x0 + g * GA.dx, y1 = GA.y0 + GA.surv[g] * GA.dy, x2 = x1 + GA.dx, y2 = GA.y0 + r * GA.dy;
+    h += `<path class="gl" data-g="${g}" d="M${x1} ${y1} C${x1 + 90} ${y1} ${x2 - 90} ${y2} ${x2} ${y2}" fill="none" stroke="#4F6DF5" stroke-width="2.5" opacity="0"/>`;
+  }
+  for (let g = 0; g < GA.cols; g++) {
+    h += `<text class="gt" data-g="${g}" x="${GA.x0 + g * GA.dx}" y="${GA.y0 - 50}" text-anchor="middle" font-family="SF Mono,Menlo" font-size="22" fill="#6A6F7C" opacity="0">g${g}</text>`;
+    for (let r = 0; r < GA.rows; r++)
+      h += `<circle class="gd" data-g="${g}" data-r="${r}" cx="${GA.x0 + g * GA.dx}" cy="${GA.y0 + r * GA.dy}" r="17" fill="#4F6DF5" opacity="0"/>`;
+  }
+  h += `<text id="gwin" x="${GA.x0 + 4 * GA.dx + 40}" y="${GA.y0 + GA.surv[4] * GA.dy + 10}" font-family="${getComputedStyle(document.documentElement).getPropertyValue('--sans')}" font-weight="700" font-size="34" fill="#1FA672" opacity="0">${esc(T.gwin)}</text>`;
+  svg.innerHTML = h;
+})();
+const gaDots = [...document.querySelectorAll('#ga .gd')], gaLines = [...document.querySelectorAll('#ga .gl')], gaTxt = [...document.querySelectorAll('#ga .gt')];
+const measureGA = () => gaLines.forEach(p => { const l = p.getTotalLength(); p.dataset.l = l; p.style.strokeDasharray = l; });
+
+/* ---------- scene 5: panel data (layout mirrors hypevolve/server.py) ---------- */
+const GENS = [[0,0,1,0,0,0],[0,1,0,0,1],[0,0,1,0,0],[1,0,0,0,0],[0,0,0,1,0]];
+(function buildPanel() {
+  let id = 1;
+  $('#ptrack').innerHTML = GENS.map((g, gi) => `<div class="generation"><b>${tr('pGen', { n: gi })}</b><div class="dots">${g.map(f => `<span class="dot ${f ? 'fail' : ''}" data-i="${id++}"></span>`).join('')}</div><small>${tr('pHyps', { n: g.length })}</small></div>`).join('');
+})();
+const pDots = [...document.querySelectorAll('#ptrack .dot')], pGens = [...document.querySelectorAll('#ptrack .generation')];
+const DETAIL = {
+  8: { gen: 1, ok: false, exit: 1, fit: '0 · 0x vs base', test: 'FAIL  protected file modified: prob_script.py', ...T.ind8 },
+  24: { gen: 4, ok: true, exit: 0, fit: '3.23 · 3.23x vs base', test: '42 passed in 1.84s', ...T.ind24 },
+};
+let shownDetail;
+function renderDetail(i) {
+  if (shownDetail === i) return; shownDetail = i;
+  if (i == null) { $('#pdetail').innerHTML = `<span class="muted">${T.pHint}</span>`; return; }
+  const x = DETAIL[i];
+  $('#pdetail').innerHTML = `<div><h2>${tr('pInd', { i, g: x.gen })}</h2><p><b>${T.pHyp}</b> ${esc(x.hyp)}</p><p>${T.pTest} <span class="${x.ok ? 'ok' : 'bad'}">${x.ok ? T.pPass : T.pFail} (exit ${x.exit})</span></p><p>Fitness: ${x.fit}</p><h3>${T.pPrompt}</h3><pre>${esc(x.prompt)}</pre></div><div><h2>${T.pOut}</h2><pre>${esc(x.out)}</pre><h3>${T.pStdout}</h3><pre class="${x.ok ? 'ok' : 'bad'}">${esc(x.test)}</pre></div>`;
+}
+const winBox = { x: 210, y: 180 };
+function dotCenter(i) {
+  const s = $('#stage').getBoundingClientRect(), r = pDots[i - 1].getBoundingClientRect();
+  return { x: r.left - s.left + r.width / 2, y: r.top - s.top + r.height / 2 };
+}
+let DOTPOS = null;
+
+/* ---------- scene 4b: statistical gate (illustrative samples, one-sided t-test vs baseline) ---------- */
+const GATE = {
+  a: [4.1, 5.6, 4.7, 5.3, 4.4, 5.9, 4.9, 5.2, 4.9], b: [-14, 22, 3, -6, 27, -9, 18, 1, 3],
+  sdA: 0.57, sdB: 14.34, pA: '< 0.001', pB: '= 0.16', x0: 660, x1: 1420, lo: -20, hi: 30,
+};
+const gx = v => GATE.x0 + (v - GATE.lo) / (GATE.hi - GATE.lo) * (GATE.x1 - GATE.x0);
+(function buildGate() {
+  let h = '';
+  [[455, 'a'], [675, 'b']].forEach(([cy, k]) => {
+    h += `<line x1="${gx(0)}" x2="${gx(0)}" y1="${cy - 60}" y2="${cy + 60}" stroke="#B9BCC6" stroke-width="3"/>`;
+    h += `<line class="gmean" x1="${gx(5)}" x2="${gx(5)}" y1="${cy - 60}" y2="${cy + 60}" stroke="#4F6DF5" stroke-width="3" stroke-dasharray="8 7" opacity="0"/>`;
+    GATE[k].forEach((v, i) => { h += `<circle class="gs gs-${k}" data-i="${i}" cx="${gx(v)}" cy="${cy + ((i * 37) % 70) - 35}" r="13" fill="${k === 'a' ? '#1FA672' : '#E5484D'}" opacity="0"/>`; });
+  });
+  h += `<text x="${gx(0)}" y="782" text-anchor="middle" font-size="20" fill="#6A6F7C" font-family="SF Mono,Menlo" id="gbase">baseline · 0%</text>`;
+  h += `<text x="${gx(5)}" y="368" text-anchor="middle" font-size="20" fill="#4F6DF5" font-family="SF Mono,Menlo" class="gmean" opacity="0">${esc(T.gMean)} +5%</text>`;
+  $('#gsvg').innerHTML = h;
+  $('#sda').textContent = fmt(GATE.sdA, 2) + '%'; $('#sdb').textContent = fmt(GATE.sdB, 2) + '%';
+  $('#pa').textContent = 'p ' + GATE.pA.replace('.', T.decimal); $('#pb').textContent = 'p ' + GATE.pB.replace('.', T.decimal);
+})();
+
+/* ---------- text fitting: translations differ in length, so shrink instead of overflowing ---------- */
+const scenes = [...document.querySelectorAll('.scene')].map(el => ({ el, s: +el.dataset.s, e: +el.dataset.e }));
+(function fitText() {
+  scenes.forEach(sc => show(sc.el, true));
+  document.querySelectorAll('.head').forEach(h => {
+    let fs = parseFloat(getComputedStyle(h).fontSize);
+    while (h.scrollWidth > h.clientWidth && fs > 18) { fs -= 1; h.style.fontSize = fs + 'px'; }
+  });
+  document.querySelectorAll('.card').forEach(c => {
+    const p = c.querySelector('p'), h = c.querySelector('h3');
+    let fs = 25; while (c.scrollHeight > c.clientHeight && fs > 16) { fs -= 1; p.style.fontSize = fs + 'px'; }
+    let hs = 44; while (h.scrollWidth > h.clientWidth && hs > 24) { hs -= 1; h.style.fontSize = hs + 'px'; }
+  });
+  const s3l = $('#s3l'); let hs = 60;
+  while (s3l.getBoundingClientRect().bottom > 1000 && hs > 36) { hs -= 2; $('#s3h').style.fontSize = hs + 'px'; }
+  const ch = [...document.querySelectorAll('.chip')];
+  let w, tot, gap = 26, fs = 34;
+  for (;;) {
+    w = ch.map(c => c.getBoundingClientRect().width); tot = w.reduce((a, b) => a + b, 0) + gap * (w.length - 1);
+    if (tot <= 1760 || fs <= 20) break;
+    fs -= 1; ch.forEach(c => { c.style.fontSize = fs + 'px'; c.style.padding = `0 ${Math.round(fs)}px`; });
+  }
+  let x = (1920 - tot) / 2; ch.forEach((c, i) => { c.style.left = x + 'px'; x += w[i] + gap; });
+  scenes.forEach(sc => show(sc.el, false));
+})();
+
+/* ---------- the seek function ---------- */
+function seek(T_out) {
+  const t = T_out / SPEED;
+  $('#b1').style.transform = `translate(${Math.sin(t * .23) * 60}px,${Math.cos(t * .19) * 40}px)`;
+  $('#b2').style.transform = `translate(${Math.cos(t * .21) * 70}px,${Math.sin(t * .17) * 50}px)`;
+  for (const sc of scenes) {
+    const on = t >= sc.s && t < sc.e; show(sc.el, on);
+    if (on) sc.el.style.opacity = (sc.s === 0 ? 1 : K(t, sc.s, .4, E.io)) * (sc.e >= END ? 1 : 1 - K(t, sc.e - .4, .4, E.io));
+  }
+  // Scenes 5-7 were authored before the gate scene was inserted, so they run on a grid shifted by GATE_LEN.
+  if (t < 9.5) s1(t); else if (t < 18) s2(t); else if (t < 28) s3(t); else if (t < 36) s4(t); else if (t < 43) sGate(t);
+  else if (t < 54) s5(t - GATE_LEN); else if (t < 61.5) s6(t - GATE_LEN); else s7(t - GATE_LEN);
+}
+
+function s1(t) {
+  fade($('#s1h1'), t, .3, 5.0);
+  fade($('#s1h2'), t, 5.3, 7.0);
+  fade($('#s1h3'), t, 7.3, null);
+  const t0 = $('#s1t0');
+  const pin = K(t, .1, .8, E.o5), pm = K(t, 5.0, .9, E.io);
+  t0.style.opacity = pin;
+  t0.style.transform = `translate(${L(0, -560, pm)}px,${L(40, 0, pin) + L(0, -60, pm)}px) scale(${L(.96, 1, pin) * L(1, .48, pm)})`;
+  const done = typed($('#s1typed'), T.prompt1, t, 1.0, 1.6);
+  blink($('#s1caret'), t, !done || t < 2.9);
+  $('#s1think').textContent = t >= 2.9 && t < 3.8 ? '\n  ' + '✻✶✳✢'[Math.floor(t * 8) % 4] + ' ' + T.think : '';
+  $('#s1ans').style.opacity = K(t, 3.8, .35);
+  $('#s1ans').innerHTML = t >= 3.8 ? S1_ANSWER : '';
+  [['#s1t1', 5.7, 0], ['#s1t2', 6.1, 560]].forEach(([id, a, x]) => {
+    const p = K(t, a, .7, E.o5), el = $(id);
+    el.style.opacity = p; el.style.transform = `translate(${x}px,${L(30, -60, p)}px) scale(.48)`;
+  });
+  const dim = K(t, 7.3, .8);
+  ['#s1t0', '#s1t1', '#s1t2'].forEach(id => $(id).style.filter = `grayscale(${dim}) brightness(${1 - .25 * dim})`);
+  ['#s1l0', '#s1l1', '#s1l2'].forEach((id, i) => fade($(id), t, 6.4 + i * .25, null, 16));
+}
+
+function s2(t) {
+  fade($('#s2q'), t, 9.7, 11.9, 30, .8);
+  const wm = $('#wm'), w1 = wm.querySelector('.w1'), w2 = wm.querySelector('.w2');
+  const pin = K(t, 12.1, .7, E.o5), pj = K(t, 13.4, .7, E.io), pu = K(t, 14.1, .8, E.io);
+  wm.style.opacity = pin;
+  w1.style.transform = `translateX(${L(-70, 0, pj)}px)`; w2.style.transform = `translateX(${L(70, 0, pj)}px)`;
+  wm.style.transform = `translateY(${L(30, 0, pin) + L(0, -235, pu)}px) scale(${L(1, .55, pu)})`;
+  ['#wl1', '#wl2'].forEach((id, i) => { $(id).style.opacity = K(t, 12.5 + i * .25, .5) * (1 - K(t, 13.3, .3)); });
+  gaTxt.forEach(el => el.setAttribute('opacity', K(t, GA.t0 + el.dataset.g * GA.step, .4)));
+  gaDots.forEach(el => {
+    const g = +el.dataset.g, r = +el.dataset.r, a = GA.t0 + g * GA.step + r * .04;
+    const pin = K(t, a, .45, E.back), sel = r === GA.surv[g], judged = K(t, a + .45, .3);
+    el.setAttribute('r', 17 * pin * (sel ? L(1, 1.25, judged) : 1));
+    el.setAttribute('opacity', K(t, a, .2) * (sel ? 1 : L(1, .18, judged)));
+    el.setAttribute('fill', sel && g === 4 ? '#1FA672' : '#4F6DF5');
+  });
+  if (!(+gaLines[0].dataset.l > 0)) measureGA();
+  gaLines.forEach(el => {
+    const g = +el.dataset.g, p = K(t, GA.t0 + g * GA.step + .55, .45, E.io);
+    el.setAttribute('opacity', p > 0 ? .45 : 0); el.style.strokeDashoffset = el.dataset.l * (1 - p);
+  });
+  $('#gwin').setAttribute('opacity', K(t, GA.t0 + 4 * GA.step + .7, .4));
+  fade($('#gacap'), t, 15.0, null, 24, .7);
+}
+
+function s3(t) {
+  fade($('#s3h'), t, 18.2, null); fade($('#s3p'), t, 18.6, null);
+  const tm = $('#s3t'), p = K(t, 18.1, .8, E.o5);
+  tm.style.opacity = p; tm.style.transform = `translateX(${L(60, 0, p)}px)`;
+  typed($('#s3typed'), T.prompt3, t, 18.8, 1.47);
+  blink($('#s3caret'), t, t < 20.4);
+  const v = (id, a) => { $(id).style.opacity = K(t, a, .3); };
+  v('#s3call', 20.5); ['#a0', '#a1', '#a2', '#a3', '#a4'].forEach((id, i) => v(id, 20.9 + i * .22)); v('#s3res', 22.3);
+  fade($('#s3b0'), t, 22.7, null, 18);
+  fade($('#s3b1'), t, 23.3, null, 18); fade($('#s3b2'), t, 24.6, null, 18); fade($('#s3b3'), t, 26.1, null, 18);
+  $('#hl1').style.opacity = K(t, 23.3, .4) * (1 - K(t, 24.5, .4));
+  $('#hl2').style.opacity = K(t, 24.6, .4) * (1 - K(t, 26.0, .4));
+}
+
+function s4(t) {
+  fade($('#s4h'), t, 28.2, null);
+  ['#c0', '#c1', '#c2', '#c3'].map(s => $(s)).forEach((c, i) => {
+    const a = 28.6 + i * 1.1, p = K(t, a, .7, E.o5);
+    c.style.opacity = p; c.style.transform = `translateY(${L(50, 0, p)}px)`;
+    const hot = t > 32.9 ? Math.max(0, 1 - Math.abs(((t - 32.9) / .5) % 4 - i) * 1.4) : (t > a && t < a + 1.1 ? 1 - K(t, a + .6, .5) : 0);
+    c.style.borderColor = `rgba(79,109,245,${hot})`;
+    c.style.boxShadow = `0 20px 50px rgba(20,22,40,.08), 0 0 0 ${6 * hot}px rgba(79,109,245,.12)`;
+  });
+  const loop = $('#loop'), len = loop.getTotalLength(), pl = K(t, 32.6, 1.0, E.io);
+  loop.style.strokeDasharray = len; loop.style.strokeDashoffset = len * (1 - pl);
+  $('#loopHead').style.opacity = K(t, 33.5, .2);
+  const pp = t > 33.6 ? ((t - 33.6) / 1.6) % 1 : -1, pulse = $('#pulse');
+  if (pp >= 0) { const pt = loop.getPointAtLength(len * pp); pulse.setAttribute('cx', pt.x); pulse.setAttribute('cy', pt.y); pulse.setAttribute('opacity', Math.sin(pp * Math.PI)); }
+  else pulse.setAttribute('opacity', 0);
+  fade($('#s4f'), t, 33.8, null, 20);
+}
+
+function sGate(t) {
+  fade($('#gh'), t, 36.2, null);
+  ['#gla', '#glb'].forEach((id, i) => fade($(id), t, 36.6 + i * .2, null, 16));
+  ['#gpa', '#gpb'].forEach((id, i) => { const p = K(t, 36.6 + i * .2, .6, E.o5), el = $(id); el.style.opacity = p; el.style.transform = `scaleX(${L(.9, 1, p)})`; });
+  $('#gbase').setAttribute('opacity', K(t, 36.9, .4));
+  document.querySelectorAll('#gsvg line:not(.gmean)').forEach(l => l.setAttribute('opacity', K(t, 36.9, .4)));
+  document.querySelectorAll('.gs').forEach(c => {
+    const i = +c.dataset.i, a = 37.2 + i * .2 + (c.classList.contains('gs-b') ? .1 : 0);
+    c.setAttribute('opacity', K(t, a, .2) * .85); c.setAttribute('r', 13 * K(t, a, .35, E.back));
+  });
+  document.querySelectorAll('.gmean').forEach(l => l.setAttribute('opacity', K(t, 39.2, .4)));
+  ['#gva', '#gvb'].forEach((id, i) => { const a = 39.7 + i * .5, p = K(t, a, .5, E.back), el = $(id); el.style.opacity = K(t, a, .2); el.style.transform = `scale(${L(.6, 1, p)})`; });
+  fade($('#gf'), t, 40.6, null, 20);
+  $('#gnote').style.opacity = K(t, 40.8, .4);
+}
+
+function s5(t) {
+  fade($('#p1'), t, 36.3, 39.7); fade($('#p2'), t, 40.0, 42.7); fade($('#p3'), t, 43.0, null);
+  const w = $('#win'), p = K(t, 36.1, .9, E.o5);
+  w.style.opacity = p; w.style.transform = `translateY(${L(70, 0, p)}px) scale(${L(.96, 1, p)})`;
+  pGens.forEach((g, gi) => {
+    const a = 36.7 + gi * .55; g.style.opacity = K(t, a, .35);
+    g.querySelectorAll('.dot').forEach((d, j) => { d.style.transform = `scale(${K(t, a + .1 + j * .06, .3, E.back)})`; });
+  });
+  $('#pmeta').textContent = tr('pMeta', { n: Math.max(1, Math.min(5, Math.floor((t - 36.7) / .55) + 1)) });
+  if (!DOTPOS) { const saved = w.style.transform; w.style.transform = 'none'; DOTPOS = { 8: dotCenter(8), 24: dotCenter(24) }; w.style.transform = saved; }
+  // cursor path: enter → dot 8 (click 40.4) → dot 24 (click 43.3)
+  const c = $('#cur'), A = { x: 1500, y: 1000 }, B = DOTPOS[8], C = DOTPOS[24];
+  const m1 = K(t, 39.3, 1.0, E.io), m2 = K(t, 42.1, 1.1, E.io);
+  let x = L(A.x, B.x, m1), y = L(A.y, B.y, m1); x = L(x, C.x, m2); y = L(y, C.y, m2);
+  const press = a => t > a && t < a + .18 ? .86 : 1;
+  c.style.opacity = K(t, 39.2, .3);
+  c.style.transform = `translate(${x - 6}px,${y - 4}px) scale(${press(40.4) * press(43.3)})`;
+  const ring = $('#ring'), clickAt = t >= 43.3 ? 43.3 : 40.4, tgt = t >= 43.3 ? C : B, rp = K(t, clickAt, .5, E.o3);
+  ring.style.opacity = t >= 40.4 ? (1 - rp) : 0;
+  ring.style.left = (tgt.x - winBox.x - 17) + 'px'; ring.style.top = (tgt.y - winBox.y - 17) + 'px';
+  ring.style.transform = `scale(${L(.6, 2.2, rp)})`;
+  ring.style.borderColor = t >= 43.3 ? '#7c9cff' : '#ff7979';
+  renderDetail(t >= 43.3 ? 24 : t >= 40.4 ? 8 : null);
+  $('#pdetail').style.opacity = t >= 40.4 ? K(t, clickAt, .25) * .7 + .3 : 1;
+  pDots.forEach(d => d.style.boxShadow = 'none');
+  if (t >= 40.4) pDots[(t >= 43.3 ? 24 : 8) - 1].style.boxShadow = `0 0 0 3px ${t >= 43.3 ? '#7c9cff' : '#ff7979'}`;
+}
+
+function s6(t) {
+  fade($('#s6h'), t, 47.2, null);
+  ['#r0', '#r1'].forEach((id, i) => { const p = K(t, 47.5 + i * .35, .8, E.o5), el = $(id); el.style.opacity = p; el.style.transform = `translateY(${L(60, 0, p)}px)`; });
+  const b = (i, a, frac, val, txt) => { const p = K(t, a, 1.4, E.o3); $('#bar' + i).style.width = (frac * p * 100) + '%'; $('#v' + i).textContent = txt(val * p); };
+  b(0, 48.3, 1, 3.23, v => fmt(v, 2) + '×'); b(1, 48.5, 1.57 / 3.23, 1.57, v => fmt(v, 2) + '×');
+  b(2, 48.7, 1, 27.8, v => '−' + fmt(v, 1) + '%'); b(3, 48.9, 4.2 / 27.8, 4.2, v => '−' + fmt(v, 1) + '%');
+  ['#bd0', '#bd1'].forEach((id, i) => { const p = K(t, 50.2 + i * .3, .5, E.back), el = $(id); el.style.opacity = K(t, 50.2 + i * .3, .2); el.style.transform = `scale(${L(.6, 1, p)})`; });
+  fade($('#s6n'), t, 51.0, null, 12);
+}
+
+function s7(t) {
+  fade($('#s7h'), t, 54.7, 57.2, 30, .7);
+  document.querySelectorAll('.chip').forEach((c, i) => {
+    const a = 55.4 + i * .22, p = K(t, a, .5, E.back), q = K(t, 57.1, .45, E.io);
+    c.style.opacity = K(t, a, .2) * (1 - q); c.style.transform = `translateY(${L(40, 0, p) - 20 * q}px) scale(${L(.8, 1, p)})`;
+  });
+  const pw = K(t, 57.5, .8, E.o5);
+  $('#s7w').style.opacity = pw; $('#s7w').style.transform = `translateY(${L(30, 0, pw)}px) scale(${L(.94, 1, pw)})`;
+  fade($('#s7t'), t, 57.9, null, 20);
+  const pc = K(t, 58.2, .5, E.o5); $('#cmd').style.opacity = pc; $('#cmd').style.transform = `translateX(-50%) translateY(${L(20, 0, pc)}px)`;
+  typed($('#cmdt'), 'uv run hypevolve mcp', t, 58.4, .77);
+  blink($('#cmdc'), t);
+}
+
+window.seek = seek;
+window.DURATION = END * SPEED;
+window.__ready = true;
+if (!/render/.test(location.search)) {
+  const st = /[?&]t=([\d.]+)/.exec(location.search), t0 = st ? +st[1] : 0, start = performance.now();
+  const fit = () => { const s = Math.min(innerWidth / 1920, innerHeight / 1080); $('#stage').style.transform = `scale(${s})`; $('#stage').style.transformOrigin = '0 0'; };
+  addEventListener('resize', fit); fit();
+  const loop = () => { seek((t0 + (performance.now() - start) / 1000) % window.DURATION); requestAnimationFrame(loop); };
+  if (/still/.test(location.search)) seek(t0); else loop();
+} else seek(0);
+</script>
+</body>
+</html>

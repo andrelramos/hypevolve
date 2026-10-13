@@ -2,6 +2,14 @@
 
 HypEvolve is a research framework that combines genetic algorithms, coding-agent CLIs, and deterministic evaluation to search for software optimizations.
 
+<p align="center">
+  <a href="docs/media/hypevolve-en.mp4"><img src="docs/media/hypevolve-en.jpg" alt="Watch the HypEvolve explainer video" width="860"></a>
+</p>
+<p align="center">
+  <b>▶ <a href="docs/media/hypevolve-en.mp4">Watch HypEvolve explained in 90 seconds</a></b><br>
+  Also available in <a href="docs/media/hypevolve-pt.mp4">Português</a> · <a href="docs/media/hypevolve-es.mp4">Español</a> · <a href="docs/media/hypevolve-zh.mp4">中文</a> · <a href="docs/media/hypevolve-ja.mp4">日本語</a>
+</p>
+
 ## What the name means
 
 **HypEvolve** combines **Hyp** (hypothesis) and **Evolve** (to evolve). The name describes the central idea: explicit, testable code hypotheses evolve through measured generations. The agent proposes a hypothesis, the deterministic harness evaluates it, and the next generation inherits the evidence collected so far.
@@ -41,6 +49,7 @@ Each individual is a persistent coding-agent session with its own workspace. Hyp
 - `experiments/`: smoke and real-target configurations.
 - `scripts/`: experiment runners, analysis, and report generation.
 - `docs/`: web control-plane documentation, research design, and the multilingual project page.
+- `video/`: source of the multilingual explainer video; `./video/render.sh` renders one MP4 per site language into `docs/media/` (requires Google Chrome and ffmpeg).
 - `tests/`: unit, contract, integration, and smoke tests.
 
 ## Quick start
