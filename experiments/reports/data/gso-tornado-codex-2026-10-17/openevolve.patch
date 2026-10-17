@@ -1,0 +1,25 @@
+--- a/tornado/concurrent.py
++++ b/tornado/concurrent.py
+@@ -283,4 +283,14 @@
+-        self.set_exc_info(
+-            (exception.__class__,
+-             exception,
+-             getattr(exception, '__traceback__', None)))
++        exc_info = (exception.__class__,
++                    exception,
++                    getattr(exception, '__traceback__', None))
++        if _GC_CYCLE_FINALIZERS:
++            self._exc_info = exc_info
++            self._log_traceback = True
++            if type(self) is Future and not self._callbacks:
++                self._done = True
++                self._callbacks = None
++            else:
++                self._set_done()
++                self._exc_info = exc_info
++        else:
++            self.set_exc_info(exc_info)
+@@ -322,0 +333,3 @@
++        if not self._callbacks:
++            self._callbacks = None
++            return
