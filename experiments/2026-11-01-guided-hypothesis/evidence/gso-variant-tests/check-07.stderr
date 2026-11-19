@@ -1,0 +1,2 @@
+/Users/andreramos/orca/workspaces/algoritmos-geneticos-com-llm/main-2/experiments/2026-11-01-guided-hypothesis/test-07.py:108: DeprecationWarning: There is no current event loop
+  fut = Future()

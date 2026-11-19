@@ -1,0 +1,132 @@
+{
+  "status": "complete",
+  "task": "tornadoweb__tornado-4d4c1e0",
+  "task_source": "Hugging Face gso-bench/gso parquet test split",
+  "source_repository": "https://github.com/tornadoweb/tornado",
+  "source_commit": "57deb98e96e13c5887ddde237c266fa4872ae46d",
+  "source_date": "2026-10-26T17:18:33-04:00",
+  "python": "Python 3.13.12",
+  "platform": "Darwin MacBook-Air.local 27.0.0 Darwin Kernel Version 27.0.0: Tue Aug 11 21:02:57 PDT 2026; root:xnu-13432.1.9~1/RELEASE_ARM64_T8132 arm64",
+  "hashes_sha256": {
+    "tornado/concurrent.py": "244f94914f9cc48c2e8cf025f7552ebe4d7d5eea9d9ff64a86b76126baf80390",
+    "prob_script.py": "ac5a92df33635c54525eb14cd2f81665e3422fdba1885501f7ead996b69d6d14",
+    "gso_check.py": "b1cafac2b7d4855aacfe8c1177111c1299ff91ee49f4c6ecb9f88cf6807b6d5a",
+    "gso_bench.py": "0c74830851236e35c30a41ecfd25ee9378bf960b8604f3f132b3ca9bb2bb00cb",
+    "reference_output.json": "1525c365e99a327c9e0c47bc0b4351cafed8da97517af3224d7d641bc0ec9d38",
+    "task-record.json": "040570d531b0d4ed5e61f5f1346d26ed0b5460f93daf094e7d1ab3cd9b026180"
+  },
+  "gso_variants": [
+    {
+      "test": 0,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 1,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 2,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 3,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 4,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 5,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 6,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 7,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 8,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 9,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 10,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 11,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 12,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 13,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 14,
+      "status": "PASS",
+      "output": ""
+    },
+    {
+      "test": 15,
+      "status": "PASS",
+      "output": ""
+    }
+  ],
+  "equivalence": "PASS",
+  "concurrency_tests": "PASS; see concurrency.stdout/stderr",
+  "timing": {
+    "warmups": 1,
+    "repetitions": 9,
+    "seconds": [
+      0.000167584,
+      0.000171541,
+      0.000172833,
+      0.000186583,
+      0.000176,
+      0.000172458,
+      0.000167542,
+      0.000178667,
+      0.000173875
+    ],
+    "median_seconds": 0.000172833,
+    "mean_seconds": 0.00017412033333333334,
+    "min_seconds": 0.000167542,
+    "max_seconds": 0.000186583,
+    "raw_files": [
+      "bench-01.stdout",
+      "bench-02.stdout",
+      "bench-03.stdout",
+      "bench-04.stdout",
+      "bench-05.stdout",
+      "bench-06.stdout",
+      "bench-07.stdout",
+      "bench-08.stdout",
+      "bench-09.stdout"
+    ]
+  }
+}
